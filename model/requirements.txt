@@ -2,3 +2,10 @@ scikit-learn
 mlflow
 psycopg2-binary
 boto3
+fastapi
+pandas
+numpy
+prometheus-fastapi-instrumentator
+python-multipart
+geopy
+

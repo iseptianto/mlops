@@ -1,6 +1,32 @@
 version: '3.8'
 
 services:
+  fastapi_tourism_app:
+    build: ./tourism-api/app/app
+    container_name: fastapi_tourism_app
+    ports:
+      - "8100:8000"
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow_server:5001
+      - AWS_ACCESS_KEY_ID=minioadmin
+      - AWS_SECRET_ACCESS_KEY=minioadmin
+      - MLFLOW_S3_ENDPOINT_URL=http://mlflow_minio:9000
+    depends_on:
+      - mlflow_server
+
+  model_tourism_trainer:
+    build:
+      context: ./model/model_tourism
+    container_name: model_tourism_trainer
+    command: ["python", "register_model.py"]
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow_server:5001
+      - AWS_ACCESS_KEY_ID=minioadmin
+      - AWS_SECRET_ACCESS_KEY=minioadmin
+      - MLFLOW_S3_ENDPOINT_URL=http://mlflow_minio:9000
+    depends_on:
+      - mlflow_server
+      
   db:
     image: postgres:13
     container_name: mlflow_db
