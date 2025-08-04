@@ -1,0 +1,14 @@
+name: tourism_env
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pip
+  - pip:
+      - mlflow
+      - scikit-learn
+      - pandas
+      - numpy
+      - boto3
+      - geopy
