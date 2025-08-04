@@ -9,7 +9,7 @@ services:
       - MLFLOW_TRACKING_URI=http://mlflow_server:5001
       - AWS_ACCESS_KEY_ID=minioadmin
       - AWS_SECRET_ACCESS_KEY=minioadmin
-      - MLFLOW_S3_ENDPOINT_URL=http://mlflow_minio:9000
+      - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
     depends_on:
       - mlflow_server
 
@@ -23,7 +23,7 @@ services:
       - MLFLOW_TRACKING_URI=http://mlflow_server:5001
       - AWS_ACCESS_KEY_ID=minioadmin
       - AWS_SECRET_ACCESS_KEY=minioadmin
-      - MLFLOW_S3_ENDPOINT_URL=http://mlflow_minio:9000
+      - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
     depends_on:
       - mlflow_server
 
