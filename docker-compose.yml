@@ -12,6 +12,8 @@ services:
       - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
     depends_on:
       - mlflow_server
+    ports:
+      - "8000:8000"
 
   # Trainer untuk model Tourism
   model_tourism_trainer:
@@ -71,6 +73,8 @@ services:
     depends_on:
       - db
       - minio
+    ports:
+      - "5001:5001"
 
   # FastAPI untuk model Iris
   fastapi_app:
@@ -83,6 +87,8 @@ services:
       - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
     depends_on:
       - mlflow_server
+    ports:
+      - "8100:8000"
 
   # Model trainer untuk Iris
   model_trainer:
@@ -109,6 +115,8 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yml'
     depends_on:
       - fastapi_app
+    ports:
+      - "9090:9090"
 
   # Grafana
   grafana_server:
@@ -124,6 +132,8 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     depends_on:
       - prometheus_server
+    ports:
+      - "3000:3000"
 
   # NGINX Reverse Proxy (Hanya ini yang expose port ke localhost)
   nginx_load_balancer:
