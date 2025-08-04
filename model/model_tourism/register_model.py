@@ -3,10 +3,10 @@ import pickle
 
 class TourismRecommender(mlflow.pyfunc.PythonModel):
     def load_context(self, context):
-        self.similarity = pickle.load(open("content_similarity.pkl", "rb"))
-        self.place_encoder = pickle.load(open("place_encoder.pkl", "rb"))
-        self.prediction_matrix = pickle.load(open("prediction_matrix.pkl", "rb"))
-        self.user_encoder = pickle.load(open("user_encoder.pkl", "rb"))
+        self.user_encoder = pickle.load(open(context.artifacts["user_encoder"], "rb"))
+        self.place_encoder = pickle.load(open(context.artifacts["place_encoder"], "rb"))
+        self.prediction_matrix = pickle.load(open(context.artifacts["prediction_matrix"], "rb"))
+        self.similarity = pickle.load(open(context.artifacts["content_similarity"], "rb"))
 
     def predict(self, context, model_input):
         # Implementasi prediksi rekomendasi di sini
@@ -27,11 +27,11 @@ if __name__ == "__main__":
             artifact_path="model",
             python_model=TourismRecommender(),
             artifacts={
-                "content_similarity.pkl": "content_similarity.pkl",
-                "place_encoder.pkl": "place_encoder.pkl",
-                "prediction_matrix.pkl": "prediction_matrix.pkl",
-                "user_encoder.pkl": "user_encoder.pkl"
-            },
+                "content_similarity": "content_similarity.pkl",
+                "place_encoder": "place_encoder.pkl",
+                "prediction_matrix": "prediction_matrix.pkl",
+                "user_encoder": "user_encoder.pkl"
+            }
             conda_env="conda_env.yaml"
         )
 
