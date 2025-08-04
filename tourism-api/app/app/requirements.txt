@@ -8,4 +8,4 @@ mlflow
 boto3
 psycopg2-binary
 geopy
-
+uvicorn[standard]

@@ -8,4 +8,5 @@ numpy
 prometheus-fastapi-instrumentator
 python-multipart
 geopy
+uvicorn[standard]
 
