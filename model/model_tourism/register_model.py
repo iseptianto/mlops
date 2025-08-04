@@ -10,7 +10,20 @@ class TourismRecommender(mlflow.pyfunc.PythonModel):
 
     def predict(self, context, model_input):
         # Implementasi prediksi rekomendasi di sini
-        return ["Place A", "Place B"]
+        rekomendasi_all = []
+
+        for user in model_input["user_id"]:
+            if user not in self.user_encoder:
+                rekomendasi_all.append(["Unknown User"])
+                continue
+
+            user_idx = self.user_encoder[user]
+            user_scores = self.prediction_matrix[user_idx]
+            top_indices = user_scores.argsort()[-3:][::-1]
+            top_places = [self.place_encoder[i] for i in top_indices]
+            rekomendasi_all.append(top_places)
+
+        return rekomendasi_all
 
 if __name__ == "__main__":
     import mlflow
@@ -31,7 +44,7 @@ if __name__ == "__main__":
                 "place_encoder": "place_encoder.pkl",
                 "prediction_matrix": "prediction_matrix.pkl",
                 "user_encoder": "user_encoder.pkl"
-            }
+            },
             conda_env="conda_env.yaml"
         )
 
