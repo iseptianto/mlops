@@ -11,3 +11,7 @@ def predict(data: dict):
     df = pd.DataFrame([data])
     pred = model.predict(df)
     return {"prediction": pred.tolist()}
+
+@app.get("/")
+def read_root():
+    return {"message": "Tourism API is running"}
