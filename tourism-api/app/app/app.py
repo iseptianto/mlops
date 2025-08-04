@@ -1,17 +1,33 @@
-# app.py
-import pickle
-from fastapi import FastAPI, Request
+# File: tourism-api/app/app/app.py
+
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+import mlflow.pyfunc
 import pandas as pd
 
-app = FastAPI()
-model = pickle.load(open("models/tourism_model.pkl", "rb"))
+# Load model from MLflow
+model = mlflow.pyfunc.load_model("models:/tourism-recommender-model@production")
 
-@app.post("/predict")
-def predict(data: dict):
-    df = pd.DataFrame([data])
-    pred = model.predict(df)
-    return {"prediction": pred.tolist()}
+app = FastAPI()
+
+# Define input schema
+class UserInput(BaseModel):
+    user_id: int
 
 @app.get("/")
 def read_root():
-    return {"message": "Tourism API is running"}
+    return {"api_status": "ok", "model_name": "tourism-recommender-model"}
+
+@app.post("/predict")
+def get_recommendation(input_data: UserInput):
+    try:
+        # Create DataFrame
+        df = pd.DataFrame({"user_id": [input_data.user_id]})
+
+        # Run prediction
+        result = model.predict(df)
+
+        return {"user_id": input_data.user_id, "recommendations": result}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
