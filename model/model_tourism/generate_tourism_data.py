@@ -48,8 +48,8 @@ def generate_tourism_data():
     # Adventure places (Raja Ampat, Komodo, Bromo)
     place_features[[2, 3, 4], 6] = np.random.uniform(0.7, 1.0, 3)  # High adventure score
     
-    content_similarity = cosine_similarity(place_features)
-    logging.info(f"Generated content similarity matrix: {content_similarity.shape}")
+    content_encoder = cosine_similarity(place_features)
+    logging.info(f"Generated content_encoder matrix: {content_encoder.shape}")
     
     # 6. PREDICTION MATRIX (User-Place Preferences)
     # Generate user preferences based on user profiles
@@ -75,19 +75,19 @@ def generate_tourism_data():
     prediction_matrix = (prediction_matrix - prediction_matrix.min()) / (prediction_matrix.max() - prediction_matrix.min())
     logging.info(f"Generated prediction matrix: {prediction_matrix.shape}")
     
-    return user_encoder, place_encoder, content_similarity, prediction_matrix
+    return user_encoder, place_encoder, content_encoder, prediction_matrix
 
 def save_model_artifacts():
     """Generate and save all required model artifacts"""
     
     logging.info("Generating tourism recommendation data...")
-    user_encoder, place_encoder, content_similarity, prediction_matrix = generate_tourism_data()
+    user_encoder, place_encoder, content_encoder, prediction_matrix = generate_tourism_data()
     
     # Save all pickle files
     artifacts = {
         "user_encoder.pkl": user_encoder,
         "place_encoder.pkl": place_encoder,
-        "content_similarity.pkl": content_similarity,
+        "content_encoder.pkl": content_encoder,
         "prediction_matrix.pkl": prediction_matrix
     }
     
@@ -128,8 +128,8 @@ def test_model_artifacts():
             place_encoder = pickle.load(f)
         with open("prediction_matrix.pkl", 'rb') as f:
             prediction_matrix = pickle.load(f)
-        with open("content_similarity.pkl", 'rb') as f:
-            content_similarity = pickle.load(f)
+        with open("content_encoder.pkl", 'rb') as f:
+            content_encoder = pickle.load(f)
         
         # Test recommendation logic
         test_user = "user_001"
