@@ -43,7 +43,7 @@ def generate_tourism_data():
     user_encoder = {user: i for i, user in enumerate(users)}
     logging.info(f"Created user_encoder with {len(users)} users")
     
-    # 5. CONTENT SIMILARITY MATRIX
+    # 5. CONTENT ENCODER MATRIX
     np.random.seed(42)
     n_places = len(places)
     n_features = 8
@@ -53,8 +53,8 @@ def generate_tourism_data():
     place_features[[2, 3, 4, 5, 6, 9], 5] = np.random.uniform(0.8, 1.0, 6)  # Nature places
     place_features[[2, 3, 4], 6] = np.random.uniform(0.7, 1.0, 3)  # Adventure places
     
-    content_similarity = cosine_similarity(place_features)
-    logging.info(f"Generated content similarity matrix: {content_similarity.shape}")
+    content_encoder = cosine_encoder(place_features)
+    logging.info(f"Generated content encoder matrix: {content_encoder.shape}")
     
     # 6. PREDICTION MATRIX
     n_users = len(users)
@@ -73,18 +73,18 @@ def generate_tourism_data():
     prediction_matrix = (prediction_matrix - prediction_matrix.min()) / (prediction_matrix.max() - prediction_matrix.min())
     logging.info(f"Generated prediction matrix: {prediction_matrix.shape}")
     
-    return user_encoder, place_encoder, content_similarity, prediction_matrix
+    return user_encoder, place_encoder, content_encoder, prediction_matrix
 
 def save_model_artifacts():
     """Generate and save all required model artifacts"""
     
     logging.info("Generating tourism recommendation data...")
-    user_encoder, place_encoder, content_similarity, prediction_matrix = generate_tourism_data()
+    user_encoder, place_encoder, content_encoder, prediction_matrix = generate_tourism_data()
     
     artifacts = {
         "user_encoder.pkl": user_encoder,
         "place_encoder.pkl": place_encoder,
-        "content_similarity.pkl": content_similarity,
+        "content_encoder.pkl": content_encoder,
         "prediction_matrix.pkl": prediction_matrix
     }
     
@@ -159,7 +159,7 @@ class TourismRecommender(mlflow.pyfunc.PythonModel):
             self.user_encoder = pickle.load(open(context.artifacts["user_encoder"], "rb"))
             self.place_encoder = pickle.load(open(context.artifacts["place_encoder"], "rb"))
             self.prediction_matrix = pickle.load(open(context.artifacts["prediction_matrix"], "rb"))
-            self.content_similarity = pickle.load(open(context.artifacts["content_similarity"], "rb"))
+            self.content_encoder = pickle.load(open(context.artifacts["content_encoder"], "rb"))
             
             logging.info("✅ All model artifacts loaded successfully")
         except Exception as e:
@@ -228,7 +228,7 @@ def register_tourism_model():
         logging.info(f"Started MLflow run: {run_id}")
         
         # Check if files exist
-        required_files = ["user_encoder.pkl", "place_encoder.pkl", "prediction_matrix.pkl", "content_similarity.pkl"]
+        required_files = ["user_encoder.pkl", "place_encoder.pkl", "prediction_matrix.pkl", "content_encoder.pkl"]
         for file in required_files:
             if not os.path.exists(file):
                 raise FileNotFoundError(f"Required file not found: {file}")
@@ -263,7 +263,7 @@ def register_tourism_model():
                 "user_encoder": "user_encoder.pkl",
                 "place_encoder": "place_encoder.pkl",
                 "prediction_matrix": "prediction_matrix.pkl",
-                "content_similarity": "content_similarity.pkl"
+                "content_encoder": "content_encoder.pkl"
             },
             conda_env="conda_env.yaml"
         )
