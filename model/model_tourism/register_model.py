@@ -228,7 +228,7 @@ def register_tourism_model():
         logging.info(f"Started MLflow run: {run_id}")
         
         # Check if files exist
-        required_files = ["user_encoder.pkl", "place_encoder.pkl", "prediction_matrix.pkl", "content_similarity.pkl"]
+        required_files = ["user_encoder.pkl", "place_encoder.pkl", "prediction_matrix.pkl", "content_encoder.pkl"]
         for file in required_files:
             if not os.path.exists(file):
                 raise FileNotFoundError(f"Required file not found: {file}")
