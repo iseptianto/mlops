@@ -1,7 +1,21 @@
 version: '3.8'
 
 services:
-  # FastAPI untuk model Tourism
+  model_tourism_trainer:
+    build:
+      context: ./model/model_tourism
+    container_name: model_tourism_trainer
+    command: ["python", "generate_dummy_pickle.py", "&&", "python", "register_model.py"]
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow_server:5001
+      - AWS_ACCESS_KEY_ID=minioadmin
+      - AWS_SECRET_ACCESS_KEY=minioadmin
+      - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
+    depends_on:
+      - mlflow_server
+    volumes:
+      - ./model/model_tourism:/app  # Mount untuk persist pickle files
+
   fastapi_tourism_app:
     build: ./tourism-api/app/app
     container_name: fastapi_tourism_app
@@ -12,22 +26,9 @@ services:
       - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
     depends_on:
       - mlflow_server
+      - model_tourism_trainer  # ✅ Tunggu model training selesai
     ports:
       - "8101:8000"
-
-  # Trainer untuk model Tourism
-  model_tourism_trainer:
-    build:
-      context: ./model/model_tourism
-    container_name: model_tourism_trainer
-    command: ["python", "register_model.py"]
-    environment:
-      - MLFLOW_TRACKING_URI=http://mlflow_server:5001
-      - AWS_ACCESS_KEY_ID=minioadmin
-      - AWS_SECRET_ACCESS_KEY=minioadmin
-      - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
-    depends_on:
-      - mlflow_server
 
   # PostgreSQL database untuk MLflow
   db:

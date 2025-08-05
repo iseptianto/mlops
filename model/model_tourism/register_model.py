@@ -1,6 +1,16 @@
 import mlflow.pyfunc
 import pickle
+# Jalankan dulu generate_dummy_pickle.py untuk create missing files
+import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
 
+# Generate content similarity matrix
+np.random.seed(42)
+features = np.random.rand(3, 10)  # 3 places, 10 features
+similarity_matrix = cosine_similarity(features)
+pickle.dump(similarity_matrix, open("content_similarity.pkl", "wb"))
+
+# Generate other files...
 class TourismRecommender(mlflow.pyfunc.PythonModel):
     def load_context(self, context):
         self.user_encoder = pickle.load(open(context.artifacts["user_encoder"], "rb"))
