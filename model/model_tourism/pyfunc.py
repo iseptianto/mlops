@@ -7,7 +7,7 @@ class TourismRecommender(mlflow.pyfunc.PythonModel):
             self.user_encoder = pickle.load(open(context.artifacts["user_encoder"], "rb"))
             self.place_encoder = pickle.load(open(context.artifacts["place_encoder"], "rb")) 
             self.prediction_matrix = pickle.load(open(context.artifacts["prediction_matrix"], "rb"))
-            self.similarity = pickle.load(open(context.artifacts["content_similarity"], "rb"))
+            # self.similarity = pickle.load(open(context.artifacts["content_similarity"], "rb"))
         except Exception as e:
             raise RuntimeError(f"Failed to load model artifacts: {e}")
 
