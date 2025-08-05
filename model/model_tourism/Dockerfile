@@ -3,5 +3,6 @@ WORKDIR /app
 COPY . .
 
 RUN pip install --no-cache-dir -r requirements.txt
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
 
+# Generate pickle files first, then register model
+CMD ["sh", "-c", "python generate_tourism_data.py && python register_model.py"]
