@@ -6,7 +6,7 @@ import numpy as np
 class TourismRecommender(mlflow.pyfunc.PythonModel):
     def load_context(self, context):
         # Load model artifacts (pastikan nama file sama)
-        self.similarity = pickle.load(open(context.artifacts["content_similarity.pkl"], "rb"))
+        self.similarity = pickle.load(open(context.artifacts["content_encoder.pkl"], "rb"))
         self.place_encoder = pickle.load(open(context.artifacts["place_encoder.pkl"], "rb"))
         self.prediction_matrix = pickle.load(open(context.artifacts["prediction_matrix.pkl"], "rb"))
         self.user_encoder = pickle.load(open(context.artifacts["user_encoder.pkl"], "rb"))
