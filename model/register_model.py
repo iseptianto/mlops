@@ -25,7 +25,7 @@ class TourismRecommender(mlflow.pyfunc.PythonModel):
         self.user_encoder = pickle.load(open(context.artifacts["user_encoder"], "rb"))
         self.place_encoder = pickle.load(open(context.artifacts["place_encoder"], "rb"))
         self.prediction_matrix = pickle.load(open(context.artifacts["prediction_matrix"], "rb"))
-        self.content_similarity = pickle.load(open(context.artifacts["content_similarity"], "rb"))
+        self.content_encoder = pickle.load(open(context.artifacts["content_encoder"], "rb"))
         logging.info("✅ Model artifacts loaded successfully")
 
     def predict(self, context, model_input):
@@ -60,7 +60,7 @@ class TourismRecommender(mlflow.pyfunc.PythonModel):
 os.chdir('/tmp')
 
 # Check all files exist
-required_files = ["user_encoder.pkl", "place_encoder.pkl", "prediction_matrix.pkl", "content_similarity.pkl"]
+required_files = ["user_encoder.pkl", "place_encoder.pkl", "prediction_matrix.pkl", "content_encoder.pkl"]
 for file in required_files:
     if not os.path.exists(file):
         print(f"❌ Missing file: {file}")
@@ -81,7 +81,7 @@ with mlflow.start_run(run_name="Manual Tourism Registration") as run:
             "user_encoder": "user_encoder.pkl",
             "place_encoder": "place_encoder.pkl",
             "prediction_matrix": "prediction_matrix.pkl",
-            "content_similarity": "content_similarity.pkl"
+            "content_encoder": "content_encoder.pkl"
         }
     )
     
